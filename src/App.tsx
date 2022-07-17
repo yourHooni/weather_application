@@ -1,11 +1,23 @@
-import { Link, Route, Routes, useSearchParams } from 'react-router-dom';
+
+import { Fragment } from 'react';
+import { Route, Routes } from 'react-router-dom';
+
+/* Styles */
+import GlobalStyle from 'styles/global-style'
+
+/* Layouts */
+import PageLayout from 'layouts/PageLayout'
+
 function App() {
   return (
-    <div>
-      <h1> 도시에 대한 날씨</h1>
+    <Fragment>
+      <GlobalStyle />
       <Routes>
-        {/* <Route path="/" element={} /> */}
+        <Route path="/" element={<PageLayout />} />
+        <Route path="*" element={<div>no math</div>} />
       </Routes>
-    </div>
+    </Fragment>
   );
 }
+
+export default App;
