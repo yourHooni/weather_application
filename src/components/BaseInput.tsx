@@ -9,12 +9,9 @@ const Input = styled.input<{
   width: 100%;
   font-size: 16px;
   color: #000;
-  border: 2px solid #19ce60;
+  padding: 10px;
+  border: 2px solid #00bcd4;
   border-radius: 2px;
-
-  ::placeholder {
-    color: gray;
-  }
 
   ${({ focused }) =>
   focused &&
