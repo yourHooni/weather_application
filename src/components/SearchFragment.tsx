@@ -16,23 +16,6 @@ import { CityListProps, CityProps } from 'interfaces/city';
 /* Assets */
 import CityListJson from 'assets/constants/city.list.json';
 
-type SearchFragmentProps = PropsWithChildren<{
-  isUseDrop?: boolean
-}>
-
-const SearchContainer = styled.div`
-  position: relative;
-  display: flex;
-  width: 100%;
-  max-width: 560px;
-  margin: auto;
-`;
-
-const Button = styled.button`
-  width: 85px;
-  margin-left: 5px;
-`;
-
 const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
   
   /* Stores */
@@ -117,5 +100,23 @@ const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
     </SearchContainer>
   )
 }
+
+/* Interfaces */
+type SearchFragmentProps = PropsWithChildren<{
+  isUseDrop?: boolean
+}>
+
+/* Styles */
+const SearchContainer = styled.div`
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 560px;
+  margin: auto;
+`;
+const Button = styled.button`
+  width: 85px;
+  margin-left: 5px;
+`;
 
 export default SearchFragment;

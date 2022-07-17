@@ -2,6 +2,7 @@ import { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 import { Property } from 'csstype'
 
+/* Interfaces */
 export type FlexBoxProps = PropsWithChildren<{
   flex?: boolean
   flexDirection?: Property.FlexDirection
@@ -20,6 +21,7 @@ export interface ContainerProps extends FlexBoxProps {
   padding?: Property.Padding
 }
 
+/* Styles */
 const BaseContainer = styled.div<ContainerProps>`
   display: ${({ flex }) => flex ? 'flex' : undefined};
   flex-direction: ${({ flexDirection }) => flexDirection};

@@ -1,7 +1,24 @@
 import { SyntheticEvent } from 'react';
 import styled, { css } from 'styled-components';
-import { Property } from 'csstype'
 
+const BaseInput = ({ onChange, ...props }: InputProps) => {
+  return (
+    <Input
+      {...props}
+      onChange={(e) => onChange && onChange(e, e.target.value)}
+    />
+  );
+}
+
+/* Interfaces */
+interface InputProps {
+  id?: string
+  onChange?: (e: SyntheticEvent, value: string) => void | null
+  focused?: string
+  disabled?: boolean
+}
+
+/* Styles */
 const Input = styled.input<{
   focused?: string
   disabled?: boolean
@@ -21,19 +38,4 @@ const Input = styled.input<{
     `};
 `;
 
-interface InputProps {
-  id?: string
-  onChange?: (e: SyntheticEvent, value: string) => void | null
-  focused?: string
-  disabled?: boolean
-}
-
-const BaseInput = ({ onChange, ...props }: InputProps) => {
-  return (
-    <Input
-      {...props}
-      onChange={(e) => onChange && onChange(e, e.target.value)}
-    />
-  );
-}
 export default BaseInput;

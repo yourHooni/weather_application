@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { getWeatherDataWithApi } from 'services/weather';
 
 /* Components */
-import BaseInput from 'components/BaseInput';
 import BaseContainer from 'components/BaseContainer';
 import SearchFragment from 'components/SearchFragment';
 
@@ -17,43 +16,19 @@ import { CityListProps, CityProps } from 'interfaces/city';
 /* Assets */
 import CityListJson from 'assets/constants/city.list.json';
 
-interface CityInfoProps extends CityProps {
-  weather?: {
-    weather: Array<{ description: string, icon: string }>
-    main?: {
-      temp?: number | string
-    }
-  }
-  weatherDesc?: string
-}
-
-const WeatherFragement = styled(BaseContainer)`
-  flex: 2;
-  margin-top: 170px;
-  text-align: center;
-}
-`;
-
-const WeatherInfo = styled.div`
-  padding: 20px;
-`;
-
-const WeatherIcon = styled.img`
-  width: 100px;
-`;
-
 const WeatherInfoPage = () => {
   const { cityID } = useParams();
 
   /* Stores */
   const [cityInfo, setCityInfo] = useState<CityInfoProps>();
 
+  /* UseEffects */
   useEffect(() => {
     const fetchWeatherInfo = async () => {
       const cityList = CityListJson as unknown as CityListProps;
       let _cityInfo = cityList.find((_city: CityProps) => _city['id'].toString() === cityID);
       if (!_cityInfo) return;
-      
+
       const result = await getWeatherDataWithApi(cityID as string);
       _cityInfo = {..._cityInfo, weather: result} as CityInfoProps;
       setCityInfo(_cityInfo);
@@ -72,7 +47,7 @@ const WeatherInfoPage = () => {
               <h2>{cityInfo['name']}</h2>
               <WeatherInfo>
               {
-                cityInfo?.weather?.weather && (
+                cityInfo?.weather?.weather ? (
                   cityInfo?.weather?.weather.length > 0 && (
                     <div>
                       <h3>날씨</h3>
@@ -85,6 +60,8 @@ const WeatherInfoPage = () => {
                       }
                     </div>
                   )
+                ) : (
+                  <div>날씨정보를 찾을 수 없습니다.</div>
                 )
               }
               </WeatherInfo>
@@ -97,5 +74,30 @@ const WeatherInfoPage = () => {
     </Fragment>
   )
 }
+
+/* Interfaces */
+interface CityInfoProps extends CityProps {
+  weather?: {
+    weather: Array<{ description: string, icon: string }>
+    main?: {
+      temp?: number | string
+    }
+  }
+  weatherDesc?: string
+}
+
+/* Styles */
+const WeatherFragement = styled(BaseContainer)`
+  flex: 2;
+  margin-top: 170px;
+  text-align: center;
+}
+`;
+const WeatherInfo = styled.div`
+  padding: 20px;
+`;
+const WeatherIcon = styled.img`
+  width: 100px;
+`;
 
 export default WeatherInfoPage;

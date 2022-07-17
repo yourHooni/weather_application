@@ -8,8 +8,6 @@ import CityListPage from 'pages/CityListPage';
 /* Components */
 import BaseContainer from 'components/BaseContainer';
 
-const TheLayout = styled(BaseContainer)``;
-
 function PageLayout() {
   return (
     <TheLayout
@@ -35,4 +33,8 @@ function PageLayout() {
     </TheLayout>
   );
 }
+
+/* Styles */
+const TheLayout = styled(BaseContainer)``;
+
 export default PageLayout;

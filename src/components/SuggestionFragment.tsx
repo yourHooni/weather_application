@@ -1,79 +1,14 @@
 
-import React, { useState, useEffect, useRef, PropsWithChildren, SyntheticEvent, Ref, useCallback } from 'react';
-import { Link, Route, Routes, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, PropsWithChildren, SyntheticEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled, { css } from 'styled-components';
 
 /* Stores */
 import { suggestionListState, historyListState, searchStatusState } from 'stores/city';
 
-/* Components */
-import BaseInput from 'components/BaseInput';
-
 /* Interfaces */
 import { CityListProps, CityProps } from 'interfaces/city';
-
-type SuggestionFragmentProps = PropsWithChildren<{
-  isDropDown?: boolean
-  onClickSuggestion?: () => void
-}>
-
-const SuggestionContainer = styled.div<{
-  dropdownStyle?: boolean
-}>`
-  width: 100%;
-  height: 100%;
-  border-radius: 3px;
-  box-shadow: 0 3px 8px #00bcd4;
-  margin-top: 10px;
-  overflow: auto;
-
-  ${({ dropdownStyle }) =>
-  dropdownStyle &&
-    css`
-      position: absolute; 
-      height: auto;
-      max-height: 150px;
-      margin-top: 0;
-      top: 43px;
-      z-index: 999;
-    `};
-`;
-
-const Suggestion = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  cursor: pointer;
-  
-  &:hover {
-    background: #00bcd447;
-  }
-`;
-const Loading = styled.div`
-  height: 100px;
-
-  @keyframes spinner {
-    from {transform: rotate(0deg); }
-    to {transform: rotate(360deg);}
-  }
-
-  &::after {
-    content: '';
-    box-sizing: border-box;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 64px;
-    height: 64px;
-    margin-top: -32px;
-    margin-left: -32px;
-    border-radius: 50%;
-    border: 4px solid lightgrey;
-    border-top-color: #00bcd4;
-    animation: spinner .8s linear infinite;
-  }
-`
 
 const MAX_PAGE_COUNT = 500; // 한 페이지에 포함된 제품 개수
 
@@ -84,13 +19,14 @@ const SuggestionFragment = ({ isDropDown=true, onClickSuggestion }: SuggestionFr
   /* Stores */
   const [suggestionList,] = useRecoilState(suggestionListState); // store, suggestion list
   const [historyList, setHistoryList] = useRecoilState(historyListState); // store, search history list
-  const [searchStatus, setSearchStatus] = useRecoilState(searchStatusState); // store, search status
+  const [searchStatus,] = useRecoilState(searchStatusState); // store, search status
 
   const target = useRef<HTMLDivElement>(null);
 
   const [currentList, setCurrentList] = useState<CityListProps>([]); // 현재 리스트
   const [page, setPage] = useState(0); // 현재 페이지
 
+  /* useEffects */
   useEffect(() => {
     if (searchStatus === 'suggestion') {
       const newSuggestionList = [...suggestionList].slice(0, MAX_PAGE_COUNT);
@@ -166,5 +102,68 @@ const SuggestionFragment = ({ isDropDown=true, onClickSuggestion }: SuggestionFr
     </SuggestionContainer>
   )
 }
+
+/* Interfaces */
+type SuggestionFragmentProps = PropsWithChildren<{
+  isDropDown?: boolean
+  onClickSuggestion?: () => void
+}>
+
+/* Styles */
+const SuggestionContainer = styled.div<{
+  dropdownStyle?: boolean
+}>`
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  box-shadow: 0 3px 8px #00bcd4;
+  margin-top: 10px;
+  overflow: auto;
+
+  ${({ dropdownStyle }) =>
+  dropdownStyle &&
+    css`
+      position: absolute; 
+      height: auto;
+      max-height: 150px;
+      margin-top: 0;
+      top: 43px;
+      z-index: 999;
+    `};
+`;
+const Suggestion = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  cursor: pointer;
+  
+  &:hover {
+    background: #00bcd447;
+  }
+`;
+const Loading = styled.div`
+  height: 100px;
+
+  @keyframes spinner {
+    from {transform: rotate(0deg); }
+    to {transform: rotate(360deg);}
+  }
+
+  &::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 64px;
+    height: 64px;
+    margin-top: -32px;
+    margin-left: -32px;
+    border-radius: 50%;
+    border: 4px solid lightgrey;
+    border-top-color: #00bcd4;
+    animation: spinner .8s linear infinite;
+  }
+`
 
 export default SuggestionFragment;

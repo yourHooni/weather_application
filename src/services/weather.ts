@@ -8,7 +8,6 @@ export const getWeatherDataWithApi = async (cityID: string) => {
     const result = await response.json();
     return result;
   } else {
-    alert('날씨정보를 찾을 수 없습니다.')
     return;
   }
 };
