@@ -52,6 +52,8 @@ const WeatherInfoPage = () => {
     const fetchWeatherInfo = async () => {
       const cityList = CityListJson as unknown as CityListProps;
       let _cityInfo = cityList.find((_city: CityProps) => _city['id'].toString() === cityID);
+      if (!_cityInfo) return;
+      
       const result = await getWeatherDataWithApi(cityID as string);
       _cityInfo = {..._cityInfo, weather: result} as CityInfoProps;
       setCityInfo(_cityInfo);
@@ -65,7 +67,7 @@ const WeatherInfoPage = () => {
       <SearchFragment />
       <WeatherFragement>
         {
-          cityInfo && (
+          cityInfo ? (
             <Fragment>
               <h2>{cityInfo['name']}</h2>
               <WeatherInfo>
@@ -87,6 +89,8 @@ const WeatherInfoPage = () => {
               }
               </WeatherInfo>
             </Fragment>
+          ) : (
+            <div>존재하지 않는 도시정보입니다.</div>
           )
         }
       </WeatherFragement>

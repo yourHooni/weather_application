@@ -29,7 +29,7 @@ function PageLayout() {
         <Routes>
           <Route path="/" element={<CityListPage />} />
           <Route path="/weather/:cityID" element={<WeatherInfoPage />} />
-          <Route path="*" element={<div>not found</div>} />
+          <Route path="*" element={<div>존재하지 않는 페이지입니다.</div>} />
         </Routes>
       </BaseContainer>
     </TheLayout>
