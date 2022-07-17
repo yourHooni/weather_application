@@ -1,6 +1,3 @@
-
-import React, { useState, useEffect, useRef, PropsWithChildren, SyntheticEvent, Fragment } from 'react';
-import { Link, Route, Routes, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 /* Pages */
@@ -11,13 +8,10 @@ import BaseContainer from 'components/BaseContainer';
 import SearchFragment from 'components/SearchFragment';
 
 const Title = styled.h1`
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 
 function PageLayout() {
-  let [searchParams, setSearchParams] = useSearchParams();
-  let city = searchParams.get("city");
-
   return (
     <BaseContainer
       flex
@@ -28,11 +22,7 @@ function PageLayout() {
     >
       <Title> Search Weather Data </Title>
       <SearchFragment />
-      {
-        city && (
-          <WeatherInfoPage />
-        )
-      }
+      <WeatherInfoPage />
     </BaseContainer>
   );
 }
