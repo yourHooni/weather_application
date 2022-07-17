@@ -15,9 +15,9 @@ const Input = styled.input<{
 
   ${({ focused }) =>
   focused &&
-  css`
-    border-color: blue;
-  `};
+    css`
+      border-color: blue;
+    `};
 `;
 
 interface InputProps {

@@ -16,6 +16,7 @@ export interface ContainerProps extends FlexBoxProps {
   id?: string
   width?: Property.Width
   height?: Property.Height
+  maxHeight?: Property.Height
   padding?: Property.Padding
 }
 
@@ -29,6 +30,7 @@ const BaseContainer = styled.div<ContainerProps>`
   align-items: ${({ alignItems }) => alignItems};
   width: ${({ width }) => width || '100%'};
   height: ${({ height }) => height || '100%'};
+  max-height: ${({ maxHeight }) => maxHeight || '100%'};
   padding: ${({ padding }) => padding || undefined};
 `;
 
