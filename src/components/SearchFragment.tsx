@@ -1,6 +1,5 @@
 
-import React, { useState, useEffect, useRef, PropsWithChildren, SyntheticEvent, Ref } from 'react';
-import { Link, Route, Routes, useSearchParams } from 'react-router-dom';
+import { useState, useEffect, PropsWithChildren, SyntheticEvent } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -44,6 +43,10 @@ const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
   const [isOpenSuggestion, SetIsOpenSuggestion] = useState<boolean>(false); // 검색어 추천 오픈 플래그 체크
 
   useEffect(() => {
+    if (!searchTerm) {
+      SetIsOpenSuggestion(false);
+      return;
+    }
     if (isUseDrop && !isOpenSuggestion) {
       SetIsOpenSuggestion(true);
     }
@@ -63,7 +66,8 @@ const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
   // 검색어에 대한 리스트 필터링
   const handleSetSuggestionList = (search='') => {
     const searchCase = new RegExp(search, 'gi');
-    const newTotalList = [...CityListJson as CityListProps].filter(
+    const cityList = CityListJson as unknown as CityListProps;
+    const newTotalList = [...cityList].filter(
         (city: CityProps) => city['name'].match(searchCase)
       );
     setSuggestionList([...newTotalList]);

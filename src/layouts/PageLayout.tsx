@@ -7,7 +7,6 @@ import CityListPage from 'pages/CityListPage';
 
 /* Components */
 import BaseContainer from 'components/BaseContainer';
-import SearchFragment from 'components/SearchFragment';
 
 const TheLayout = styled(BaseContainer)``;
 
@@ -29,7 +28,7 @@ function PageLayout() {
       >
         <Routes>
           <Route path="/" element={<CityListPage />} />
-          <Route path="/weather/:city" element={<WeatherInfoPage />} />
+          <Route path="/weather/:cityID" element={<WeatherInfoPage />} />
           <Route path="*" element={<div>not found</div>} />
         </Routes>
       </BaseContainer>

@@ -32,8 +32,10 @@ const SuggestionContainer = styled.div<{
   dropdownStyle &&
     css`
       position: absolute; 
+      height: auto;
       max-height: 200px;
       margin-top: 0;
+      top: 43px;
       z-index: 999;
     `};
 `;
@@ -113,7 +115,7 @@ const SuggestionFragment = ({ isDropDown=true, onClickSuggestion }: SuggestionFr
   // Suggestion 클릭시, 페이지 이동
   const handleClickSuggestion = (city: CityProps) => {
     if (onClickSuggestion) onClickSuggestion();
-    navigate(`/weather/${city['id']}`);
+    navigate(`/weather/${city['id']}`, { state: city });
   };
 
   // 스크롤이 하단에 위치할 때, pagenation
