@@ -6,6 +6,12 @@ import { CityListProps, CityProps } from 'interfaces/city';
 
 const { persistAtom } = recoilPersist();
 
+// 'suggestion' or 'history'
+export const searchStatusState = atom<string>({
+  key: 'searchStatus',
+  default: 'suggestion',
+});
+
 // 검색어가 포함된 city list
 export const suggestionListState = atom<CityListProps>({
   key: 'suggestionList',
