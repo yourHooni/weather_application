@@ -68,13 +68,21 @@ const Loading = styled.div`
   }
 `
 const SearchFragment = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [suggestionList, setSuggestionList] = useState<CityListProps>([]);
+  const [, setSearchParams] = useSearchParams(); // search param
+
+  /* States */
+  const [searchTerm, setSearchTerm] = useState(''); // 검색어
+  const [suggestionList, setSuggestionList] = useState<CityListProps>([]); // 검색 추천 리스트
+  const [isOpenSuggestion, SetIsOpenSuggestion] = useState<boolean>(false); // 검색어 추천 오픈 플래그 체크
 
   useEffect(() => {
     if (!searchTerm) {
       setSuggestionList([]);
+      SetIsOpenSuggestion(false);
       return;
+    }
+    if (!isOpenSuggestion) {
+      SetIsOpenSuggestion(true);
     }
     handleSearchCity();
   }, [searchTerm]);
@@ -85,7 +93,16 @@ const SearchFragment = () => {
         (city: CityProps) => city['name'].match(searchCase)
       );
     setSuggestionList(newSuggestionList);
+    if (!(newSuggestionList.length > 0)) {
+      SetIsOpenSuggestion(false);
+    }
   }
+
+  const handleClickSuggestion = (city: CityProps) => {
+    setSearchParams({ city: city['id'] });
+    setSuggestionList([]);
+    SetIsOpenSuggestion(false);
+  };
 
   // handle change search term
   const onChangeSearchTerm = (e: SyntheticEvent) => {
@@ -100,7 +117,7 @@ const SearchFragment = () => {
         onChange={onChangeSearchTerm}
       />
       {
-        searchTerm && (
+        isOpenSuggestion && (
           <SuggestionFragment>
             {
               suggestionList && (
@@ -108,7 +125,7 @@ const SearchFragment = () => {
                   <ul>
                     {
                       suggestionList.map((suggestion: CityProps, index: number) => (
-                        <li key={index}>
+                        <li key={index} onClick={() => handleClickSuggestion(suggestion)}>
                           <Suggestion>
                             { suggestion['name'] }
                           </Suggestion>
