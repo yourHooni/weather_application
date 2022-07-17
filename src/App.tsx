@@ -1,6 +1,6 @@
 
 import { Fragment } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
 
 /* Styles */
 import GlobalStyle from 'styles/global-style'
@@ -12,10 +12,9 @@ function App() {
   return (
     <Fragment>
       <GlobalStyle />
-      <Routes>
-        <Route path="/" element={<PageLayout />} />
-        <Route path="*" element={<div>no math</div>} />
-      </Routes>
+      <RecoilRoot>
+        <PageLayout />
+      </RecoilRoot>
     </Fragment>
   );
 }
