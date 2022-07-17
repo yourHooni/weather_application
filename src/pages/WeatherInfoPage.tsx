@@ -19,14 +19,27 @@ import CityListJson from 'assets/constants/city.list.json';
 
 interface CityInfoProps extends CityProps {
   weather?: {
-    weather: Array<{ description: string }>
+    weather: Array<{ description: string, icon: string }>
+    main?: {
+      temp?: number | string
+    }
   }
   weatherDesc?: string
 }
 
-const WeatherInfo = styled.div`
+const WeatherFragement = styled(BaseContainer)`
   flex: 2;
+  margin-top: 170px;
+  text-align: center;
+}
+`;
+
+const WeatherInfo = styled.div`
   padding: 20px;
+`;
+
+const WeatherIcon = styled.img`
+  width: 100px;
 `;
 
 const WeatherInfoPage = () => {
@@ -50,28 +63,33 @@ const WeatherInfoPage = () => {
   return (
     <Fragment>
       <SearchFragment />
-      <WeatherInfo>
+      <WeatherFragement>
         {
           cityInfo && (
             <Fragment>
-              <div>
-                <h3>도시명</h3>
-                <h5>{cityInfo['name']}</h5>
-              </div>
+              <h2>{cityInfo['name']}</h2>
+              <WeatherInfo>
               {
                 cityInfo?.weather?.weather && (
                   cityInfo?.weather?.weather.length > 0 && (
                     <div>
                       <h3>날씨</h3>
+                      <WeatherIcon alt={cityInfo?.weather?.weather[0]?.icon} src={`http://openweathermap.org/img/w/${cityInfo?.weather?.weather[0]?.icon}.png`} />
                       <h5>{cityInfo?.weather?.weather[0]?.description}</h5>
+                      {
+                        cityInfo?.weather?.main && (
+                          <h5>{Math.floor(cityInfo?.weather?.main?.temp as number).toString()} &#8457;</h5>
+                        )
+                      }
                     </div>
                   )
                 )
               }
+              </WeatherInfo>
             </Fragment>
           )
         }
-      </WeatherInfo>
+      </WeatherFragement>
     </Fragment>
   )
 }

@@ -33,7 +33,7 @@ const SuggestionContainer = styled.div<{
     css`
       position: absolute; 
       height: auto;
-      max-height: 200px;
+      max-height: 150px;
       margin-top: 0;
       top: 43px;
       z-index: 999;
@@ -48,12 +48,6 @@ const Suggestion = styled.div`
     background: #00bcd447;
   }
 `;
-
-const Button = styled.button`
-  width: 85px;
-  margin-left: 5px;
-`;
-
 const Loading = styled.div`
   height: 100px;
 
