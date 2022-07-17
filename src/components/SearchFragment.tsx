@@ -41,7 +41,6 @@ const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
   
   /* States */
   const [searchTerm, setSearchTerm] = useState(''); // 검색어
-  // const [suggestionList, setSuggestionList] = useState<CityListProps>([]); // 검색 추천 리스트
   const [isOpenSuggestion, SetIsOpenSuggestion] = useState<boolean>(false); // 검색어 추천 오픈 플래그 체크
 
   useEffect(() => {
@@ -68,7 +67,6 @@ const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
         (city: CityProps) => city['name'].match(searchCase)
       );
     setSuggestionList([...newTotalList]);
-    // setSuggestionList([...newTotalList].slice(0, MAX_PAGE_COUNT));
   };
 
   return (

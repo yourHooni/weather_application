@@ -29,7 +29,7 @@ function PageLayout() {
       >
         <Routes>
           <Route path="/" element={<CityListPage />} />
-          <Route path="/:city" element={<WeatherInfoPage />} />
+          <Route path="/weather/:city" element={<WeatherInfoPage />} />
           <Route path="*" element={<div>not found</div>} />
         </Routes>
       </BaseContainer>

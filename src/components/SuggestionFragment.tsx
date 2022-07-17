@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef, PropsWithChildren, SyntheticEvent, Ref, useCallback } from 'react';
-import { Link, Route, Routes, useSearchParams } from 'react-router-dom';
+import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled, { css } from 'styled-components';
 
@@ -80,11 +80,11 @@ const Loading = styled.div`
 const MAX_PAGE_COUNT = 500; // 한 페이지에 포함된 제품 개수
 
 const SuggestionFragment = ({ isDropDown=true, onClickSuggestion }: SuggestionFragmentProps) => {
-    
-  const [, setSearchParams] = useSearchParams();
+  
+  const navigate = useNavigate();
 
-/* Stores */
-const [suggestionList,] = useRecoilState(suggestionListState); // store, suggestion list
+  /* Stores */
+  const [suggestionList,] = useRecoilState(suggestionListState); // store, suggestion list
 
   const target = useRef<HTMLDivElement>(null);
 
@@ -110,11 +110,13 @@ const [suggestionList,] = useRecoilState(suggestionListState); // store, suggest
     setPage(page + 1);
   };
 
+  // Suggestion 클릭시, 페이지 이동
   const handleClickSuggestion = (city: CityProps) => {
     if (onClickSuggestion) onClickSuggestion();
-    setSearchParams({ city: city['id'] });
+    navigate(`/weather/${city['id']}`);
   };
 
+  // 스크롤이 하단에 위치할 때, pagenation
   const onScroll = () => {
     if (!target.current) return;
     if (suggestionList.length <= page * MAX_PAGE_COUNT) return;

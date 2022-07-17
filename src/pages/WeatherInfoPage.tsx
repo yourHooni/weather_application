@@ -1,17 +1,16 @@
 
 import React, { useState, useEffect, useRef, PropsWithChildren, SyntheticEvent, Fragment } from 'react';
-import { Link, Route, Routes, useSearchParams } from 'react-router-dom';
+import { Link, Route, Routes, useParams } from 'react-router-dom';
 
 const WeatherInfoPage = () => {
-  const [searchParams,] = useSearchParams();
-  const city = searchParams.get("city");
+  const { city } = useParams();
   console.log('city', city)
 
   return (
     <Fragment>
       {
         city && (
-          <div></div>
+          <div>{city}</div>
         )
       }
     </Fragment>
