@@ -1,29 +1,39 @@
+import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 
 /* Pages */
 import WeatherInfoPage from 'pages/WeatherInfoPage';
+import CityListPage from 'pages/CityListPage';
 
 /* Components */
 import BaseContainer from 'components/BaseContainer';
 import SearchFragment from 'components/SearchFragment';
 
-const Title = styled.h1`
-  margin-bottom: 20px;
-`;
+const TheLayout = styled(BaseContainer)``;
 
 function PageLayout() {
   return (
-    <BaseContainer
+    <TheLayout
       flex
       flexDirection={'column'}
-      justifyContent={'center'}
       alignItems={'center'}
       padding={'20px'}
     >
-      <Title> Search Weather Data </Title>
-      <SearchFragment />
-      <WeatherInfoPage />
-    </BaseContainer>
+      <h1> Search Weather Data </h1>
+      <BaseContainer
+        flex
+        flexDirection={'column'}
+        flexGrow={2}
+        flexShrink={2}
+        maxHeight={'calc(100% - 28px)'}
+      >
+        <Routes>
+          <Route path="/" element={<CityListPage />} />
+          <Route path="/:city" element={<WeatherInfoPage />} />
+          <Route path="*" element={<div>not found</div>} />
+        </Routes>
+      </BaseContainer>
+    </TheLayout>
   );
 }
 export default PageLayout;
