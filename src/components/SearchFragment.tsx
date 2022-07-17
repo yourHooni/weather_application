@@ -1,106 +1,57 @@
 
-import React, { useState, useEffect, useRef, PropsWithChildren, SyntheticEvent } from 'react';
+import React, { useState, useEffect, useRef, PropsWithChildren, SyntheticEvent, Ref } from 'react';
 import { Link, Route, Routes, useSearchParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
+
+/* Stores */
+import { suggestionListState } from 'stores/city';
 
 /* Components */
 import BaseInput from 'components/BaseInput';
+import SuggestionFragment from 'components/SuggestionFragment';
+
+/* Interfaces */
+import { CityListProps, CityProps } from 'interfaces/city';
 
 /* Assets */
 import CityListJson from 'assets/constants/city.list.json';
-interface CityProps {
-  id: string,
-  name: string,
-  state?: string,
-  country: string,
-  coord?: object
-};
 
-type CityListProps = Array<CityProps>;
+type SearchFragmentProps = PropsWithChildren<{
+  isUseDrop?: boolean
+}>
 
 const SearchContainer = styled.div`
   position: relative;
+  display: flex;
   width: 100%;
   max-width: 560px;
+  margin: auto;
 `;
 
-const SuggestionFragment = styled.div`
-  position: absolute; 
-  width: 100%;
-  max-height: 200px;
-  border-radius: 3px;
-  box-shadow: 0 3px 8px #00bcd4;
-  z-index: 999;
-  overflow: auto;
+const Button = styled.button`
+  width: 85px;
+  margin-left: 5px;
 `;
 
-const Suggestion = styled.div`
-  padding: 10px;
-  cursor: pointer;
+const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
   
-  &:hover {
-    background: #00bcd447;
-  }
-`;
-
-const Loading = styled.div`
-  height: 100px;
-
-  @keyframes spinner {
-    from {transform: rotate(0deg); }
-    to {transform: rotate(360deg);}
-  }
-
-  &::after {
-    content: '';
-    box-sizing: border-box;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 64px;
-    height: 64px;
-    margin-top: -32px;
-    margin-left: -32px;
-    border-radius: 50%;
-    border: 4px solid lightgrey;
-    border-top-color: #00bcd4;
-    animation: spinner .8s linear infinite;
-  }
-`
-const SearchFragment = () => {
-  const [, setSearchParams] = useSearchParams(); // search param
-
+  /* Stores */
+  const [, setSuggestionList] = useRecoilState(suggestionListState); // store, suggestion list
+  
   /* States */
   const [searchTerm, setSearchTerm] = useState(''); // 검색어
-  const [suggestionList, setSuggestionList] = useState<CityListProps>([]); // 검색 추천 리스트
+  // const [suggestionList, setSuggestionList] = useState<CityListProps>([]); // 검색 추천 리스트
   const [isOpenSuggestion, SetIsOpenSuggestion] = useState<boolean>(false); // 검색어 추천 오픈 플래그 체크
 
   useEffect(() => {
-    if (!searchTerm) {
-      setSuggestionList([]);
-      SetIsOpenSuggestion(false);
-      return;
-    }
-    if (!isOpenSuggestion) {
+    if (isUseDrop && !isOpenSuggestion) {
       SetIsOpenSuggestion(true);
     }
-    handleSearchCity();
+    handleSetSuggestionList(searchTerm);
   }, [searchTerm]);
 
-  const handleSearchCity = () => {
-    const searchCase = new RegExp(searchTerm, 'gi');
-    const newSuggestionList = [...CityListJson as CityListProps].filter(
-        (city: CityProps) => city['name'].match(searchCase)
-      );
-    setSuggestionList(newSuggestionList);
-    if (!(newSuggestionList.length > 0)) {
-      SetIsOpenSuggestion(false);
-    }
-  }
-
-  const handleClickSuggestion = (city: CityProps) => {
-    setSearchParams({ city: city['id'] });
-    setSuggestionList([]);
+  const handleClickSuggestion = () => {
     SetIsOpenSuggestion(false);
   };
 
@@ -110,35 +61,26 @@ const SearchFragment = () => {
     setSearchTerm(value);
   };
 
+  // 검색어에 대한 리스트 필터링
+  const handleSetSuggestionList = (search='') => {
+    const searchCase = new RegExp(search, 'gi');
+    const newTotalList = [...CityListJson as CityListProps].filter(
+        (city: CityProps) => city['name'].match(searchCase)
+      );
+    setSuggestionList([...newTotalList]);
+    // setSuggestionList([...newTotalList].slice(0, MAX_PAGE_COUNT));
+  };
+
   return (
     <SearchContainer>
       <BaseInput 
         id='search_city' 
         onChange={onChangeSearchTerm}
       />
+      <Button>최근 검색어</Button>
       {
         isOpenSuggestion && (
-          <SuggestionFragment>
-            {
-              suggestionList && (
-                suggestionList.length > 0 ? (
-                  <ul>
-                    {
-                      suggestionList.map((suggestion: CityProps, index: number) => (
-                        <li key={index} onClick={() => handleClickSuggestion(suggestion)}>
-                          <Suggestion>
-                            { suggestion['name'] }
-                          </Suggestion>
-                        </li>
-                      ))
-                    }
-                  </ul>
-                ) : (
-                  <Loading />
-                )
-              )
-            }
-          </SuggestionFragment>
+          <SuggestionFragment onClickSuggestion={handleClickSuggestion} />
         )
       }
     </SearchContainer>
