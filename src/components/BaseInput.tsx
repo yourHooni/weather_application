@@ -4,6 +4,7 @@ import { Property } from 'csstype'
 
 const Input = styled.input<{
   focused?: string
+  disabled?: boolean
 }>`
   position: relative;
   width: 100%;
@@ -24,6 +25,7 @@ interface InputProps {
   id?: string
   onChange?: (e: SyntheticEvent, value: string) => void | null
   focused?: string
+  disabled?: boolean
 }
 
 const BaseInput = ({ onChange, ...props }: InputProps) => {
