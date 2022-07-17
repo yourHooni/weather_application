@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 /* Stores */
-import { suggestionListState } from 'stores/city';
+import { suggestionListState, searchStatusState } from 'stores/city';
 
 /* Components */
 import BaseInput from 'components/BaseInput';
@@ -37,24 +37,39 @@ const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
   
   /* Stores */
   const [, setSuggestionList] = useRecoilState(suggestionListState); // store, suggestion list
-  
+  const [searchStatus, setSearchStatus] = useRecoilState(searchStatusState); // store, search status
+
   /* States */
   const [searchTerm, setSearchTerm] = useState(''); // 검색어
   const [isOpenSuggestion, SetIsOpenSuggestion] = useState<boolean>(false); // 검색어 추천 오픈 플래그 체크
 
   useEffect(() => {
-    if (!searchTerm) {
-      SetIsOpenSuggestion(false);
-      return;
-    }
-    if (isUseDrop && !isOpenSuggestion) {
+    if (isUseDrop) {
+      if (searchStatus==='suggestion' && !searchTerm) {
+        SetIsOpenSuggestion(false);
+        return;
+      }
       SetIsOpenSuggestion(true);
     }
     handleSetSuggestionList(searchTerm);
   }, [searchTerm]);
 
+  useEffect(() => {
+    if (searchStatus === 'history') {
+      if (isUseDrop) {
+        SetIsOpenSuggestion(true);
+      }
+    } else {
+      SetIsOpenSuggestion(false);
+    }
+  }, [searchStatus]);
+
   const handleClickSuggestion = () => {
-    SetIsOpenSuggestion(false);
+    if (searchStatus==='suggestion') {
+      SetIsOpenSuggestion(false);
+    } else {
+      setSearchStatus('suggestion');
+    }
   };
 
   // handle change search term
@@ -73,13 +88,27 @@ const SearchFragment = ({ isUseDrop=true }: SearchFragmentProps) => {
     setSuggestionList([...newTotalList]);
   };
 
+  // 검색 상태 변경
+  const handleChangeSearchStatus = () => {
+    if (searchStatus === 'suggestion') {
+      setSearchStatus('history');
+    } else {
+      setSearchStatus('suggestion');
+    }
+  };
+
   return (
     <SearchContainer>
       <BaseInput 
         id='search_city' 
         onChange={onChangeSearchTerm}
+        disabled={searchStatus === 'history'}
       />
-      <Button>최근 검색어</Button>
+      <Button onClick={handleChangeSearchStatus}>
+        {
+          searchStatus === 'suggestion' ? '최근 검색' : '검색'
+        }
+      </Button>
       {
         isOpenSuggestion && (
           <SuggestionFragment onClickSuggestion={handleClickSuggestion} />

@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import styled, { css } from 'styled-components';
 
 /* Stores */
-import { suggestionListState } from 'stores/city';
+import { suggestionListState, historyListState, searchStatusState } from 'stores/city';
 
 /* Components */
 import BaseInput from 'components/BaseInput';
@@ -41,6 +41,8 @@ const SuggestionContainer = styled.div<{
 `;
 
 const Suggestion = styled.div`
+  display: flex;
+  justify-content: space-between;
   padding: 10px;
   cursor: pointer;
   
@@ -81,6 +83,8 @@ const SuggestionFragment = ({ isDropDown=true, onClickSuggestion }: SuggestionFr
 
   /* Stores */
   const [suggestionList,] = useRecoilState(suggestionListState); // store, suggestion list
+  const [historyList, setHistoryList] = useRecoilState(historyListState); // store, search history list
+  const [searchStatus, setSearchStatus] = useRecoilState(searchStatusState); // store, search status
 
   const target = useRef<HTMLDivElement>(null);
 
@@ -88,17 +92,18 @@ const SuggestionFragment = ({ isDropDown=true, onClickSuggestion }: SuggestionFr
   const [page, setPage] = useState(0); // 현재 페이지
 
   useEffect(() => {
-    handleInitialize();
-  }, [suggestionList]);
+    if (searchStatus === 'suggestion') {
+      const newSuggestionList = [...suggestionList].slice(0, MAX_PAGE_COUNT);
+      setCurrentList([...newSuggestionList]);
+    } else {
+      const newHistoryList = [...historyList];
+      setCurrentList([...newHistoryList]);
+    }
+
+    setPage(1);
+  }, [suggestionList, historyList, searchStatus]);
   
   /* Events */
-  // 초기화
-  const handleInitialize = () => {
-    const newSuggestionList = [...suggestionList].slice(0, MAX_PAGE_COUNT)
-    setCurrentList([...newSuggestionList]);
-    setPage(1);
-  };
-
   // 다음 페이지 리스트 추가 ( 마지막 페이지일 경우 return false, else true )
   const handlePageNation = () => {
     const newSuggestionList = [...suggestionList].slice((page) * MAX_PAGE_COUNT, (page + 1) * MAX_PAGE_COUNT)
@@ -110,17 +115,27 @@ const SuggestionFragment = ({ isDropDown=true, onClickSuggestion }: SuggestionFr
   const handleClickSuggestion = (city: CityProps) => {
     if (onClickSuggestion) onClickSuggestion();
     navigate(`/weather/${city['id']}`, { state: city });
+    const newHistoryList = [...historyList];
+    newHistoryList.push(city)
+    setHistoryList([...newHistoryList]);
   };
 
   // 스크롤이 하단에 위치할 때, pagenation
   const onScroll = () => {
-    if (!target.current) return;
+    if (!target.current || searchStatus !== 'suggestion') return;
     if (suggestionList.length <= page * MAX_PAGE_COUNT) return;
     const { scrollTop, scrollHeight } = target.current;
     if (scrollTop > (scrollHeight - scrollHeight/10)) {
       handlePageNation();
     }
   };
+
+  // history 삭제
+  const handleRemoveHistory = (e: SyntheticEvent, index: number) => {
+    e.stopPropagation();
+    const newHistoryList = historyList.filter((_, _index: number) => index !== _index);
+    setHistoryList([...newHistoryList]);
+  }
 
   return (
     <SuggestionContainer dropdownStyle={isDropDown} onScroll={onScroll} ref={target}>
@@ -133,6 +148,11 @@ const SuggestionFragment = ({ isDropDown=true, onClickSuggestion }: SuggestionFr
                   <li key={index} onClick={() => handleClickSuggestion(suggestion)}>
                     <Suggestion>
                       { suggestion['name'] }
+                      {
+                        searchStatus === 'history' && (
+                          <button onClick={(e) => handleRemoveHistory(e, index)}>X</button>
+                        )
+                      }
                     </Suggestion>
                   </li>
                 ))
